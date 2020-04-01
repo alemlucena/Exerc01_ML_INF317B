@@ -1,4 +1,4 @@
-clear all, close all
+clear all, close all, clc;
 %% Questão 6 - Item a)
 rng(1) % mantem o mesmo sorteio aleatório
 
@@ -56,9 +56,10 @@ contour(x,x,y1)
 contour(x,x,y2)
 scatter(mu1(1),mu1(2),300,[0, 0.4470, 0.7410],'.');
 scatter(mu2(1),mu2(2),300,[0.8500, 0.3250, 0.0980],'.');
-plot(t,tt,'k--')
+h2 = plot(t,tt,'k--')
 caxis([0.005 0.14])
 title('Limiar de separação','FontSize',14);
+legend([h2],'x_2 = (22x_{1}^2 -23log(23)+368)/184');
 axis([-10 10 -8 12]);
 axis square
 grid
@@ -143,11 +144,11 @@ for i=1:N
     end
 end
 
-[TP FP;FN TN]
+[TP FP;FN TN];
 CM = [TP/N FP/N;FN/N TN/N];
 
 acc = (TP+TN)/N; % Acurácia
-err = (FP+FN)/N; % Erro
+err = (FP+FN)/N % Erro
 
 %% Simulação - Item c)
 
@@ -216,8 +217,8 @@ for i=1:N
     end
 end
 
-[TP FP;FN TN]
+[TP FP;FN TN];
 CM = [TP/N FP/N;FN/N TN/N];
 
 acc = (TP+TN)/N; % Acurácia
-err = (FP+FN)/N; % Erro
+err = (FP+FN)/N % Erro

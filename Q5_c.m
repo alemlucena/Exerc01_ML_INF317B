@@ -1,4 +1,4 @@
-clear all, close all
+clear all, close all, clc;
 %% Questão 5 - Item c)
 rng(1) % mantem o mesmo sorteio aleatório
 
@@ -103,4 +103,4 @@ end
 CM = [TP/N FP/N;FN/N TN/N];
 
 acc = (TP+TN)/N; % Acurácia
-err = (FP+FN)/N; % Erro
+err = (FP+FN)/N % Erro

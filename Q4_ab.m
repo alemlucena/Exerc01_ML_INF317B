@@ -1,4 +1,4 @@
-clear all, close all;
+clear all, close all, clc;
 %% Questão 4)
 rng(1) % mantem o mesmo sorteio aleatório
 

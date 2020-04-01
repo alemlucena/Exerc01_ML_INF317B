@@ -1,5 +1,5 @@
-clear all, close all;
-%% Questão 4)
+clear all, close all, clc;
+%% Questão 4) f)
 rng(1) % mantem o mesmo sorteio aleatório
 
 x = linspace(-10,10,1000);
