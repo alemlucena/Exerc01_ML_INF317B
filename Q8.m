@@ -1,64 +1,78 @@
 clear all, close all;
 %% Questão 8
-rng(1) % mantem o mesmo sorteio aleatório
+rng(4) % mantem o mesmo sorteio aleatório
 
 load dataset2.txt
 
-X=dataset2;
+data=dataset2;
 
-N = length(X);
+N = length(data);
 nSim = 10;
 
-% train_percent = (1/5);     % item a) Caso 1
-train_percent = (4/5);  % item b) Caso 2
+train_percent_a = (1/5);  % item a) Caso 1
+train_percent_b = (4/5);  % item b) Caso 2
 
-acc = [];
-err = [];
+acc_a = [];
+err_a = [];
+acc_b = [];
+err_b = [];
 for ii=1:nSim
 
-[train_data,train_label,test_data,test_label] = my_holdout(X(:,1:2)',X(:,3),train_percent);
+[train_data_a,train_label_a,test_data_a,test_label_a] = my_holdout(data(:,1:2)',data(:,3),train_percent_a);
+[train_data_b,train_label_b,test_data_b,test_label_b] = my_holdout(data(:,1:2)',data(:,3),train_percent_b);
 
-s1=train_data(:,find(train_label==1));
-s2=train_data(:,find(train_label==2));
+s1_a=train_data_a(:,find(train_label_a==1));
+s2_a=train_data_a(:,find(train_label_a==2));
+s1_b=train_data_b(:,find(train_label_b==1));
+s2_b=train_data_b(:,find(train_label_b==2));
 
-p1 = length(s1)/length(train_data);
-p2 = length(s2)/length(train_data);
+p1_a = length(s1_a)/length(train_data_a);
+p2_a = length(s2_a)/length(train_data_a);
+p1_b = length(s1_b)/length(train_data_b);
+p2_b = length(s2_b)/length(train_data_b);
 
-mu1 = mean(s1,2); % média classe 1
-mu2 = mean(s2,2); % média classe 2
+mu1_a = mean(s1_a,2); % média classe 1 a
+mu2_a = mean(s2_a,2); % média classe 2 a
+mu1_b = mean(s1_b,2); % média classe 1 a
+mu2_b = mean(s2_b,2); % média classe 2 a
 
-sigma = cov([s1 s2]');
+sigma_a = cov([s1_a s2_a]');
+sigma_b = cov([s1_b s2_b]');
 
-w = inv(sigma)*(mu1-mu2);
-x0 = 0.5*(mu1+mu2)-(1/((mu1-mu2)'*inv(sigma)*(mu1-mu2)))*(mu1-mu2)*log(p1/p2);
+w_a = inv(sigma_a)*(mu1_a-mu2_a);
+x0_a = 0.5*(mu1_a+mu2_a)-(1/((mu1_a-mu2_a)'*inv(sigma_a)*(mu1_a-mu2_a)))*(mu1_a-mu2_a)*log(p1_a/p2_a);
+w_b = inv(sigma_b)*(mu1_b-mu2_b);
+x0_b = 0.5*(mu1_b+mu2_b)-(1/((mu1_b-mu2_b)'*inv(sigma_b)*(mu1_b-mu2_b)))*(mu1_b-mu2_b)*log(p1_b/p2_b);
 
 k = linspace(-10,10,100);
-v = (-w(1)*k+w(1)*x0(1)+w(2)*x0(2))/w(2);
+v_a = (-w_a(1)*k+w_a(1)*x0_a(1)+w_a(2)*x0_a(2))/w_a(2);
+v_b = (-w_b(1)*k+w_b(1)*x0_b(1)+w_b(2)*x0_b(2))/w_b(2);
 
 % Equação da reta -> y = a*x + b
-a = (-w(1)/w(2));
-b = (w(1)*x0(1)+w(2)*x0(2))/w(2);
+a_a = (-w_a(1)/w_a(2));
+b_a = (w_a(1)*x0_a(1)+w_a(2)*x0_a(2))/w_a(2);
+a_b = (-w_b(1)/w_b(2));
+b_b = (w_b(1)*x0_b(1)+w_b(2)*x0_b(2))/w_b(2);
+%% Validação - Item a)
 
-%% Validação
-
-c = test_data;
-labels = test_label; % Classe 1 = 1 e Classe 2 = 2;
+c_a = test_data_a;
+labels_a = test_label_a; % Classe 1 = 1 e Classe 2 = 2
 
 TP = 0;
 FP = 0;
 TN = 0;
 FN = 0;
-N = length(c);
+N = length(c_a);
 for i=1:N
-    g = a*c(1,i)+b-c(2,i);
+    g = a_a*c_a(1,i)+b_a-c_a(2,i);
     if g < 0
-        if labels(i) == 1
+        if labels_a(i) == 1
             TP = TP + 1;
         else
             FP = FP +1;
         end
     else
-        if labels(i) == 2
+        if labels_a(i) == 2
             TN = TN + 1;
         else
             FN = FN +1;
@@ -67,14 +81,43 @@ for i=1:N
 end
 
 [TP FP;FN TN];
-CM = [TP/N FP/N;FN/N TN/N];
+CM_a = [TP/N FP/N;FN/N TN/N];
 
-acc = [acc,(TP+TN)/N]; % Acurácia
-err = [err,(FP+FN)/N]; % Erro
+acc_a = [acc_a,(TP+TN)/N]; % Acurácia
+err_a = [err_a,(FP+FN)/N]; % Erro
+
+%% Validação - Item b)
+
+c_b = test_data_b;
+labels_b = test_label_b; % Classe 1 = 1 e Classe 2 = 2
+
+TP = 0;
+FP = 0;
+TN = 0;
+FN = 0;
+N = length(c_b);
+for i=1:N
+    g = a_b*c_b(1,i)+b_b-c_b(2,i);
+    if g < 0
+        if labels_b(i) == 1
+            TP = TP + 1;
+        else
+            FP = FP +1;
+        end
+    else
+        if labels_b(i) == 2
+            TN = TN + 1;
+        else
+            FN = FN +1;
+        end
+    end
 end
 
-[mean(acc) sqrt(var(acc))]
-% [mean(err) var(err)]
+[TP FP;FN TN];
+CM_b = [TP/N FP/N;FN/N TN/N];
+
+acc_b = [acc_b,(TP+TN)/N]; % Acurácia
+err_b = [err_b,(FP+FN)/N]; % Erro
 
 %% Figure plot
 
@@ -84,33 +127,34 @@ xx=linspace(-surf_range,surf_range,200);
 yy=linspace(-surf_range,surf_range,200);
 [X,Y]=meshgrid(xx,yy);
 
-Z = X;
+Z1 = X;
+Z2 = X;
 for i = 1:length(X)
     for j = 1:length(Y)
         c = [X(i,j);Y(i,j)];
-        Z(i,j) = a*c(1)+b-c(2);
+        Z1(i,j) = a_a*c(1)+b_a-c(2);
+        Z2(i,j) = a_b*c(1)+b_b-c(2);
     end
 end
-Z = sign(Z);
+Z1 = sign(Z1);
+Z2 = sign(Z2);
 
 figure
 hold on
-sc1 = scatter(s1(1,:),s1(2,:),[],[0, 0.4470, 0.7410],'o');
-sc2 = scatter(s2(1,:),s2(2,:),[],[0.8500, 0.3250, 0.0980],'+');
-plot(k,v,'k--','LineWidth',1.5);
-scatter([mu1(1) mu2(1)],[mu1(2) mu2(2)],300,'k','.');
-plot([mu1(1) mu2(1)],[mu1(2) mu2(2)],'--','Color',[0.8 0.8 0.8])
-scatter(x0(1),x0(2),'k*');
-map = [sc1.CData;sc2.CData];
-h2 = surf(X,Y,Z);
-alpha 0.3
-view(2);
-colormap(map)
-set(h2,'edgecolor','none');
-title('Simulação Classificação - LDA','FontSize',14);
-leg = legend('Classe 1','Classe 2',sprintf('x_2 = %.1fx_1 + %.1f',a,b),'\mu_i');
+sc1 = scatter(data(data(:,3)==1,1),data(data(:,3)==1,2),[],[0, 0.4470, 0.7410],'o');
+sc2 = scatter(data(data(:,3)==2,1),data(data(:,3)==2,2),[],[0.8500, 0.3250, 0.0980],'+');
+plot(k,v_a,'b--','LineWidth',1.5);
+plot(k,v_b,'r--','LineWidth',1.5);
+title(sprintf('Classificação dataset2 LDA - #%i',ii),'FontSize',14);
+leg = legend('Classe 1','Classe 2',sprintf('A) x_2 = %.1fx_1 + %.1f',a_a,b_a),sprintf('B) x_2 = %.1fx_1 + %.1f',a_b,b_b));
 axis([-4 4 -4 4]);
 pbaspect([1 1 1])
 grid
 xlabel('x_1','FontSize',14)
 ylabel('x_2','FontSize',14)
+
+end
+
+% média acurácia e desvio padrão
+[mean(acc_a) sqrt(var(acc_a))] % item a)
+[mean(acc_b) sqrt(var(acc_b))] % item b)
