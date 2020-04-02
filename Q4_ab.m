@@ -81,3 +81,7 @@ CM = [TN/N FN/N;FP/N TP/N];
 
 acc = (TP+TN)/N; % Acurácia
 err = (FP+FN)/N; % Erro
+sen = TP/(TP+FN);% Sensibilidade
+esp = TN/(TN+FP);% Especificidade
+
+[acc err sen esp]*100

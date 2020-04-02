@@ -151,8 +151,6 @@ data = X(:,1:2)';
 labels = X(:,3);
 train_percent = 3/4;
 
-nSim = 1;
-
 acc = [];
 err = [];
 for ii=1:nSim
